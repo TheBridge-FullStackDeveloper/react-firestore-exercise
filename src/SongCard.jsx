@@ -5,8 +5,10 @@ import { NextIcon } from "./assets/NextIcon";
 import { PreviousIcon } from "./assets/PreviousIcon";
 import { RepeatOneIcon } from "./assets/RepeatOneIcon";
 import { ShuffleIcon } from "./assets/ShuffleIcon";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-export function SongCard({ singleSong, liked, setLiked }) {
+export function SongCard({ singleSong }) {
   return (
     <Card
       isBlurred
@@ -39,18 +41,15 @@ export function SongCard({ singleSong, liked, setLiked }) {
                   {singleSong.title}
                 </h1>
               </div>
-              <Button
-                isIconOnly
-                className="text-default-900/60 data-[hover]:bg-foreground/10 -translate-y-2 translate-x-2"
-                radius="full"
-                variant="light"
-                onPress={() => setLiked((v) => !v)}
+              <IconButton
+                aria-label="delete"
+                color="primary"
+                onClick={() => {
+                  console.log("clicking");
+                }}
               >
-                <HeartIcon
-                  className={liked ? "[&>path]:stroke-transparent" : ""}
-                  fill={liked ? "currentColor" : "none"}
-                />
-              </Button>
+                <DeleteIcon />
+              </IconButton>
             </div>
 
             <div className="flex flex-col mt-3 gap-1">

@@ -4,12 +4,12 @@ import {
   collection,
   getDocs,
   setDoc,
+  deleteDoc,
   doc,
 } from "firebase/firestore";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { SingleInput } from "./SingleInput";
-import { useState } from "react";
 import { Button } from "@nextui-org/react";
 import { SongCard } from "./SongCard";
 
@@ -37,6 +37,11 @@ const setNewSong = async (data) => {
   await setDoc(doc(songRef), data);
 };
 
+const deleteSong = async (documentId) => {
+  console.log("This is the document id", documentId);
+  await deleteDoc(doc(db, "songs", documentId));
+};
+
 export function Index() {
   const { data: songs, isLoading } = useQuery({
     queryKey: ["songs"],
@@ -46,21 +51,24 @@ export function Index() {
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm();
+
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
     mutationKey: "songs",
     mutationFn: setNewSong,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["songs"] });
+    },
   });
 
   const onSubmit = (data) => {
-    mutate(data);
-    console.log(data);
+    const newData = { ...data };
+    console.log(newData);
+    mutate(newData);
   };
-
-  const [liked, setLiked] = useState(false);
 
   if (isLoading) {
     return <p>Loading...</p>;
@@ -104,7 +112,13 @@ export function Index() {
 
       <div className="flex flex-col justify-content items-center gap-4 m-4">
         {songs.map((singleSong, index) => {
-          return <SongCard singleSong={singleSong} key={index} liked={liked} setLiked={setLiked} />;
+          return (
+            <SongCard
+              singleSong={singleSong}
+              deleteSong={deleteSong}
+              key={index}
+            />
+          );
         })}
       </div>
     </main>
