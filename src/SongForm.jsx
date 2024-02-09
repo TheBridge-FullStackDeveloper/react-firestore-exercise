@@ -11,7 +11,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { SingleInput } from "./SingleInput";
 import { Button } from "@nextui-org/react";
-import { SongCard } from "./SongCard";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDowcY9Vc5CvJhJzhDhnB5-sRA4dBcjOS8",
@@ -42,7 +41,7 @@ const deleteSong = async (documentId) => {
   await deleteDoc(doc(db, "songs", documentId));
 };
 
-export function Index() {
+export function SongForm() {
   const { data: songs, isLoading } = useQuery({
     queryKey: ["songs"],
     queryFn: getSongs,
@@ -53,6 +52,13 @@ export function Index() {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+  const inputArray = [
+    { id: "1", name: "title", type: "string", error: errors.title },
+    { id: "2", name: "artist", type: "string", error: errors.artist },
+    { id: "3", name: "year", type: "number", error: errors.year },
+    { id: "4", name: "genre", type: "string", error: errors.genre },
+  ];
 
   const queryClient = useQueryClient();
 
@@ -81,46 +87,22 @@ export function Index() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col justify-center items-center mt-10 gap-3"
       >
-        <SingleInput
-          control={control}
-          name="title"
-          type="string"
-          error={errors.title}
-        />
-        <SingleInput
-          control={control}
-          name="artist"
-          type="string"
-          error={errors.artist}
-        />
-        <SingleInput
-          control={control}
-          name="year"
-          type="number"
-          error={errors.year}
-        />
-        <SingleInput
-          control={control}
-          name="genre"
-          type="string"
-          error={errors.genre}
-        />
+        {inputArray.map((input, id) => {
+          return (
+            <SingleInput
+              control={control}
+              name={input.name}
+              type={input.type}
+              key={id}
+              error={input.error}
+            />
+          );
+        })}
+
         <Button color="primary" type="submit">
           Submit
         </Button>
       </form>
-
-      <div className="flex flex-col justify-content items-center gap-4 m-4">
-        {songs.map((singleSong, index) => {
-          return (
-            <SongCard
-              singleSong={singleSong}
-              deleteSong={deleteSong}
-              key={index}
-            />
-          );
-        })}
-      </div>
     </main>
   );
 }
