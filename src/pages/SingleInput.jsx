@@ -7,19 +7,20 @@ export function SingleInput({ control, name, type, error }) {
 
   return (
     <Controller
-      name={name}
-      control={control}
+      name={name}  //Unique name of your input
+      control={control} //	control object is from invoking useForm
+      defaultValue = {''} //This solved my warning "A component changed from uncontrolled to controlled"
       rules={{
         required: {
           value: true,
           message: "This field is required.",
         },
-      }}
+      }} //required, min, max, minLength, maxLength, pattern, validate
       render={({ field: { onChange, value, name } }) => (
         <Input
-          label={capitalizeFirstLetter(name)}
-          value={value}
-          onChange={onChange}
+          label={capitalizeFirstLetter(name)} //Input's name being registered.
+          value={value} //	The current value of the controlled component.
+          onChange={onChange} //A function which sends the input's value to the library.
           isInvalid={!!error}
           color={error ? "danger" : "default"}
           errorMessage={error && error.message}

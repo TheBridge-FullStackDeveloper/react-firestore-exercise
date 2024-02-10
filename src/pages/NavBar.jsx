@@ -4,6 +4,7 @@ export function NavBar() {
   return (
     <>
       <div className="flex flex-row gap-5 items-center justify-center m-5">
+        <Link to="/">Index</Link>
         <Link to="/songs">Songs</Link>
         <Link to="/create-song">Add New Song</Link>
       </div>
