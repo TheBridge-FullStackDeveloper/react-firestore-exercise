@@ -47,11 +47,11 @@ export const AddSong = () => {
             />
 
             <Input
-              key="author"
+              key="artist"
               type="text"
-              label="Author"
+              label="Artist"
               labelPlacement="outside"
-              {...register("author", { required: true })}
+              {...register("artist", { required: true })}
             />
 
             <Input
