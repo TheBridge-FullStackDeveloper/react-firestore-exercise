@@ -1,13 +1,35 @@
-import { Link, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import {
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+  Link,
+} from "@nextui-org/react";
+
+const navbarItems = [
+  { id: "1", url: "/", name: "Song List" },
+  { id: "2", url: "/create-song", name: "Add Song" },
+];
 
 export function NavBar() {
   return (
     <>
-      <div className="flex flex-row gap-5 items-center justify-center m-5">
-        <Link to="/">Index</Link>
-        <Link to="/songs">Songs</Link>
-        <Link to="/create-song">Add New Song</Link>
-      </div>
+      <Navbar position="static" className="bg-black text-white">
+        <NavbarBrand>
+          <p className="font-bold text-inherit">MUSIC API</p>
+        </NavbarBrand>
+
+        <NavbarContent className="hidden sm:flex gap-8" justify="center">
+          {navbarItems.map((item) => (
+            <NavbarItem key={item.id}>
+              <Link href={item.url} className="text-white">
+                {item.name}
+              </Link>
+            </NavbarItem>
+          ))}
+        </NavbarContent>
+      </Navbar>
       <Outlet />
     </>
   );

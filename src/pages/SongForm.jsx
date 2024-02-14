@@ -1,13 +1,17 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { SingleInput } from "./SingleInput";
 import { Button } from "@nextui-org/react";
 import { setNewSong } from "../../config/firebase"; //Go up two levels in the directory structure.
+import { CircularIndeterminate } from "./CircularIndeterminate";
+import { Box } from "@mui/material";
+import Alert from "@mui/material/Alert";
 
 export function SongForm() {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
@@ -20,7 +24,11 @@ export function SongForm() {
 
   const queryClient = useQueryClient();
 
-  const { mutate: mutateCreateSong } = useMutation({
+  const {
+    mutate: mutateCreateSong,
+    isPending: isPendingCreation,
+    isSuccess: isSuccessCreated,
+  } = useMutation({
     mutationKey: "songs",
     mutationFn: setNewSong,
     onSuccess: () => {
@@ -33,17 +41,17 @@ export function SongForm() {
   };
 
   return (
-    <main className="bg-black">
-      <h1 className="text-center text-white m-4">My songs</h1>
-
+    <main className="bg-black h-screen flex flex-col">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col justify-center items-center mt-10 gap-3"
+        className="flex flex-col justify-center items-center mt-20 gap-3"
       >
+        <h1 className="text-white">Add your song to the list</h1>
         {inputArray.map((input) => {
           return (
             <SingleInput
               control={control}
+              reset={reset}
               name={input.name}
               type={input.type}
               key={input.id}
@@ -56,6 +64,18 @@ export function SongForm() {
           Submit
         </Button>
       </form>
+
+      {isPendingCreation && (
+        <Box className="flex flex-col justify-center items-center mt-10 gap-3">
+          <CircularIndeterminate />
+        </Box>
+      )}
+
+      {isSuccessCreated && (
+        <Box className="flex flex-col justify-center items-center mt-10 gap-3">
+          <Alert severity="success">Your song was succesfully created. </Alert>
+        </Box>
+      )}
     </main>
   );
 }

@@ -1,26 +1,34 @@
 import { useQuery } from "@tanstack/react-query";
 import { SongCard } from "./SongCard";
 import { getSongsByDate } from "../../config/firebase";
+import { CircularIndeterminate } from "./CircularIndeterminate";
+import { Link } from "react-router-dom";
 
 export function SongList() {
   const { data: songs, isLoading } = useQuery({
-    queryKey: ["songs"], //This defines a unique identifier for the query. Any subsequent re-fetches based on the same queryKey will reuse cached data if available.
-    queryFn: getSongsByDate, //The function that the query will use to request data.
+    queryKey: ["songs"],
+    queryFn: getSongsByDate,
   });
 
-  //It stores the fetched data in the songs variable.
-
-  console.log(songs);
-
   if (isLoading) {
-    return <h1>Loading...</h1>;
+    return (
+      <div className="flex flex-col justify-content items-center gap-4 m-4">
+        <CircularIndeterminate className="text-center" />
+      </div>
+    );
   }
 
   return (
-    <div className="flex flex-col justify-content items-center gap-4 m-4">
-      {songs?.map((singleSong) => {
-        return <SongCard singleSong={singleSong} key={singleSong.id} />;
-      })}
-    </div>
+    <main className="bg-black flex justify-center">
+      <div className="flex flex-col gap-4 m-8">
+        {songs?.map((singleSong) => {
+          return (
+            <Link key={singleSong.id} to={singleSong.id}>
+              <SongCard singleSong={singleSong} />
+            </Link>
+          );
+        })}
+      </div>
+    </main>
   );
 }
